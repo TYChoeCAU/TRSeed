@@ -133,7 +133,7 @@ def test(model, user_dict, n_params, deg, mode='test',
     res = {
         'recall': [float(np.mean(recalls[K])) if recalls[K] else 0.0 for K in Ks],
         'ndcg'  : [float(np.mean(ndcgs[K]))   if ndcgs[K]   else 0.0 for K in Ks],
-        'precision': [0.0 for _ in Ks],  # (필요 시 추가 계산)
+        'precision': [0.0 for _ in Ks],
         'hit_ratio': [0.0 for _ in Ks],
     }
     deg_recall_mean = {k: float(np.mean(v)) if len(v) else 0.0 for k, v in deg_recall.items()}
