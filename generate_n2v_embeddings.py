@@ -61,7 +61,7 @@ def main():
     ap.add_argument('--p_list', type=str, default='0.25,0.5,1,5,10,100')
     ap.add_argument('--q_list', type=str, default='0.25,0.5,1,5,10,100')
     ap.add_argument('--seed', type=int, default=42)
-    ap.add_argument('--workers', type=int, default=1, help=">=2는 Linux만 권장")
+    ap.add_argument('--workers', type=int, default=1, help=">=2 recommended on Linux only")
     ap.add_argument('--force', action='store_true', help="overwrite existing files")
     args = ap.parse_args()
 
