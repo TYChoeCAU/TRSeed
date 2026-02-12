@@ -1,5 +1,3 @@
-# generate_n2v_embeddings.py  (multi p,q sweep)
-
 import os
 import argparse
 import time
@@ -11,10 +9,7 @@ def parse_float_list(s):
     return [float(x) for x in str(s).split(',') if str(x).strip()]
 
 def load_graph_from_preprocessed_files(data_path):
-    """
-    ./data/<dataset>/{train.txt}만 사용해 그래프를 생성합니다.
-    각 라인은: user item1 item2 ...  (공백 또는 탭 구분 둘 다 허용)
-    """
+  
     print(f"[load] ONLY train.txt from {data_path} (to avoid leakage)")
     fp = os.path.join(data_path, 'train.txt')
     if not os.path.isfile(fp):
@@ -23,7 +18,7 @@ def load_graph_from_preprocessed_files(data_path):
     edges = []
     with open(fp, 'r', encoding='utf-8') as f:
         for line in f:
-            parts = line.strip().split()  # 공백/탭 자동 분리
+            parts = line.strip().split()  
             if len(parts) < 2: 
                 continue
             u = int(parts[0])
@@ -41,18 +36,16 @@ def run_node2vec(G, dim, walk_len, num_walks, p, q, seed=42, workers=1):
         dimensions=dim,
         walk_length=walk_len,
         num_walks=num_walks,
-        workers=workers,      # Windows 안전을 위해 1 권장
+        workers=workers,     
         p=p,
         q=q,
         seed=seed,
         quiet=False
     )
-    # 기본 파라미터는 Word2Vec 기본값과 유사
     model = n2v.fit(window=10, min_count=1, batch_words=4)
     return model
 
 def fmt(x):
-    """파일명용 간단 포맷(불필요한 0 제거)"""
     s = f"{x:.6g}"
     return s
 
@@ -74,17 +67,14 @@ def main():
 
     os.makedirs(args.out_dir, exist_ok=True)
 
-    # 1) 그래프 로드(한 번만)
     data_path = os.path.join(args.data_root, args.dataset)
     G = load_graph_from_preprocessed_files(data_path)
 
-    # 2) 스윕 목록
     P = parse_float_list(args.p_list)
     Q = parse_float_list(args.q_list)
     print(f"[sweep] p_list={P}, q_list={Q}")
     print(f"[cfg] dim={args.dimensions}, walk_length={args.walk_length}, num_walks={args.num_walks}")
 
-    # 3) 모든 조합 실행
     for p in P:
         for q in Q:
             tag = f"{args.dataset}_p{fmt(p)}_q{fmt(q)}_d{args.dimensions}.kv"
